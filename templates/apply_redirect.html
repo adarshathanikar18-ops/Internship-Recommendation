@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Apply to {{ company.name }}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 min-h-screen flex items-center justify-center">
+  <div class="w-full max-w-2xl p-8 bg-white rounded-2xl shadow">
+    <div class="text-center mb-6">
+      <h1 class="text-2xl font-bold text-emerald-600 mb-2">Apply to {{ company.name }}</h1>
+      <p class="text-slate-600">Choose your preferred job portal to apply:</p>
+    </div>
+
+    <div class="space-y-4">
+      {% if company.naukri_url %}
+      <a href="/apply/{{ company.id }}/naukri" target="_blank" 
+         class="block w-full p-4 border-2 border-orange-200 rounded-lg hover:border-orange-400 hover:bg-orange-50 transition-colors">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="font-semibold text-orange-600">Naukri.com</h3>
+            <p class="text-sm text-slate-600">India's leading job portal</p>
+          </div>
+          <div class="text-orange-600">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+            </svg>
+          </div>
+        </div>
+      </a>
+      {% endif %}
+
+      {% if company.linkedin_url %}
+      <a href="/apply/{{ company.id }}/linkedin" target="_blank"
+         class="block w-full p-4 border-2 border-blue-200 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition-colors">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="font-semibold text-blue-600">LinkedIn</h3>
+            <p class="text-sm text-slate-600">Professional networking platform</p>
+          </div>
+          <div class="text-blue-600">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+            </svg>
+          </div>
+        </div>
+      </a>
+      {% endif %}
+
+      {% if company.company_careers_url %}
+      <a href="/apply/{{ company.id }}/careers" target="_blank"
+         class="block w-full p-4 border-2 border-green-200 rounded-lg hover:border-green-400 hover:bg-green-50 transition-colors">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="font-semibold text-green-600">{{ company.name }} Careers</h3>
+            <p class="text-sm text-slate-600">Official company careers page</p>
+          </div>
+          <div class="text-green-600">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+            </svg>
+          </div>
+        </div>
+      </a>
+      {% endif %}
+
+      {% if not company.naukri_url and not company.linkedin_url and not company.company_careers_url %}
+      <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-center">
+        <p class="text-yellow-800 font-medium">No direct application links available yet.</p>
+        <p class="text-sm text-yellow-600 mt-1">Your application has been recorded. Check back later or search for "{{ company.name }} careers" online.</p>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="mt-6 p-4 bg-blue-50 rounded-lg">
+      <h4 class="font-semibold text-blue-800 mb-2">💡 Application Tips:</h4>
+      <ul class="text-sm text-blue-700 space-y-1">
+        <li>• Tailor your resume to match the job requirements</li>
+        <li>• Highlight relevant skills: {{ company.required_skills }}</li>
+        <li>• Mention your CGPA if it meets their requirement ({{ company.min_cgpa }}+)</li>
+        <li>• Include projects that demonstrate your programming skills</li>
+      </ul>
+    </div>
+
+    <div class="mt-6 text-center">
+      <a href="/company/{{ company.id }}" class="px-4 py-2 rounded border mr-2">Back to Company</a>
+      <a href="/applications" class="px-4 py-2 rounded bg-blue-600 text-white">View My Applications</a>
+    </div>
+  </div>
+
+  <script>
+    // Track application attempt
+    document.querySelectorAll('a[href*="/apply/"]').forEach(link => {
+      link.addEventListener('click', function() {
+        // You could add analytics tracking here
+        console.log('User clicked to apply via:', this.href);
+      });
+    });
+  </script>
+</body>
+</html>

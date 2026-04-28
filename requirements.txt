@@ -1,0 +1,11 @@
+Flask
+Flask-SQLAlchemy
+python-dotenv
+pandas
+numpy
+scikit-learn
+mysql-connector-python
+joblib
+requests
+beautifulsoup4
+lxml

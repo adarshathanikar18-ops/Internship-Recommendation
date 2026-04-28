@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Your Recommendations - InternMatch</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-blue-50">
+  <!-- Header -->
+  <nav class="bg-white/80 backdrop-blur-sm border-b border-emerald-100">
+    <div class="max-w-6xl mx-auto px-4 py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <div class="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center">
+            <span class="text-white font-bold text-sm">IM</span>
+          </div>
+          <span class="text-xl font-bold text-emerald-600">InternMatch</span>
+        </div>
+        <div class="flex items-center space-x-4">
+          <a href="/applications" class="text-slate-600 hover:text-emerald-600 transition-colors">My Applications</a>
+          <a href="/" class="text-slate-600 hover:text-emerald-600 transition-colors">Home</a>
+          <a href="/logout" class="text-red-600 hover:text-red-700 transition-colors">Logout</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="py-8 px-4">
+    <div class="max-w-5xl mx-auto">
+      <!-- Progress Header -->
+      <div class="text-center mb-8">
+        <div class="flex items-center justify-center mb-4">
+          <div class="flex items-center space-x-2">
+            <div class="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center">
+              <span class="text-white text-sm">✓</span>
+            </div>
+            <div class="w-16 h-1 bg-emerald-600 rounded"></div>
+            <div class="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center">
+              <span class="text-white text-sm font-semibold">2</span>
+            </div>
+            <div class="w-16 h-1 bg-slate-200 rounded"></div>
+            <div class="w-8 h-8 bg-slate-200 rounded-full flex items-center justify-center">
+              <span class="text-slate-500 text-sm font-semibold">3</span>
+            </div>
+          </div>
+        </div>
+        <h1 class="text-3xl font-bold text-slate-800 mb-2">Your Perfect Matches, {{ student.name }}! 🎯</h1>
+        <p class="text-slate-600">We found {{ results|length }} companies that match your profile. Ready to apply?</p>
+      </div>
+
+      <!-- Student Profile Summary -->
+      <div class="bg-white rounded-xl shadow-sm p-6 mb-8">
+        <h3 class="text-lg font-semibold text-slate-800 mb-4">Your Profile Summary</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="text-center">
+            <div class="text-2xl font-bold text-emerald-600">{{ student.cgpa }}</div>
+            <div class="text-sm text-slate-500">CGPA</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl font-bold text-blue-600">{{ student.programming_score }}</div>
+            <div class="text-sm text-slate-500">Programming</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl font-bold text-purple-600">{{ student.skills.split(',')|length if student.skills else 0 }}</div>
+            <div class="text-sm text-slate-500">Skills</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl font-bold text-orange-600">{{ results|length }}</div>
+            <div class="text-sm text-slate-500">Matches</div>
+          </div>
+        </div>
+        {% if subject_fields %}
+        <div class="mt-6 border-t pt-4">
+          <h4 class="text-sm font-semibold text-slate-600 mb-3 uppercase tracking-wide">Subject Marks</h4>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {% for field, label in subject_fields %}
+            <div class="text-center p-3 rounded-lg bg-slate-50">
+              <div class="text-xl font-semibold text-slate-800">{{ student[field] if student[field] else 0 }}</div>
+              <div class="text-xs text-slate-500">{{ label }}</div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Recommendations Grid -->
+      <div class="space-y-6">
+        {% for r in results %}
+        <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow overflow-hidden
+                    {% if r.meets_requirements %}border-l-4 border-green-500{% else %}border-l-4 border-orange-500{% endif %}">
+          <div class="p-6">
+            <!-- Company Header -->
+            <div class="flex items-start justify-between mb-4">
+              <div class="flex-1">
+                <div class="flex items-center space-x-3 mb-2">
+                  <h3 class="text-xl font-bold text-slate-800">{{ r.name }}</h3>
+                  <span class="px-2 py-1 text-xs font-medium bg-slate-100 text-slate-600 rounded-full">{{ r.category }}</span>
+                </div>
+                <p class="text-slate-600 mb-3">{{ r.description }}</p>
+                
+                <!-- Requirements -->
+                <div class="flex flex-wrap items-center gap-4 text-sm text-slate-500">
+                  <span class="flex items-center">
+                    <span class="w-2 h-2 bg-blue-400 rounded-full mr-2"></span>
+                    Min CGPA: {{ r.min_cgpa }}
+                  </span>
+                  <span class="flex items-center">
+                    <span class="w-2 h-2 bg-purple-400 rounded-full mr-2"></span>
+                    Programming: {{ r.min_prog }}+
+                  </span>
+                </div>
+                
+                {% if subject_fields %}
+                <div class="mt-4 text-sm text-slate-500">
+                  <p class="font-semibold text-slate-600 mb-2">Subject Benchmarks</p>
+                  <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {% for field, label in subject_fields %}
+                    <div class="bg-slate-50 rounded-lg px-3 py-2 flex items-center justify-between">
+                      <span class="text-xs text-slate-500">{{ label }}</span>
+                      <span class="text-sm font-semibold text-slate-800">{{ r.subject_requirements.get(field, 0) }}+</span>
+                    </div>
+                    {% endfor %}
+                  </div>
+                </div>
+                {% endif %}
+              </div>
+              
+              <!-- Match Score -->
+              <div class="text-center ml-6">
+                <div class="relative w-20 h-20">
+                  <svg class="w-20 h-20 transform -rotate-90" viewBox="0 0 36 36">
+                    <path class="text-slate-200" stroke="currentColor" stroke-width="3" fill="none" 
+                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                    <path class="{% if r.match_score >= 70 %}text-green-500{% elif r.match_score >= 50 %}text-orange-500{% else %}text-red-500{% endif %}" 
+                          stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"
+                          stroke-dasharray="{{ r.match_score }}, 100" 
+                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                  </svg>
+                  <div class="absolute inset-0 flex items-center justify-center">
+                    <span class="text-lg font-bold {% if r.match_score >= 70 %}text-green-600{% elif r.match_score >= 50 %}text-orange-600{% else %}text-red-600{% endif %}">
+                      {{ r.match_score }}%
+                    </span>
+                  </div>
+                </div>
+                <div class="text-xs text-slate-500 mt-1">Match Score</div>
+              </div>
+            </div>
+
+            <!-- Status Badge -->
+            <div class="mb-4">
+              {% if r.meets_requirements %}
+                <span class="inline-flex items-center px-3 py-1 text-sm font-medium bg-green-100 text-green-800 rounded-full">
+                  <span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                  ✓ You meet all requirements
+                </span>
+              {% else %}
+                <span class="inline-flex items-center px-3 py-1 text-sm font-medium bg-orange-100 text-orange-800 rounded-full">
+                  <span class="w-2 h-2 bg-orange-500 rounded-full mr-2"></span>
+                  ⚠ Below some requirements - still worth applying!
+                </span>
+              {% endif %}
+              <p class="text-sm text-slate-500 mt-2">{{ r.match_summary }}</p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-wrap gap-3">
+              <a href="/apply/{{ r.id }}" 
+                 class="px-6 py-2 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-700 transition-colors transform hover:scale-105 shadow-md">
+                🚀 Apply Now
+              </a>
+              <a href="/company/{{ r.id }}" 
+                 class="px-4 py-2 border border-slate-300 text-slate-700 rounded-lg font-medium hover:bg-slate-50 transition-colors">
+                📋 View Details
+              </a>
+              {% if r.match_score >= 80 %}
+                <span class="px-3 py-2 bg-yellow-100 text-yellow-800 rounded-lg text-sm font-medium">
+                  ⭐ Highly Recommended
+                </span>
+              {% endif %}
+            </div>
+
+            <!-- Match Breakdown -->
+            <details class="mt-4 bg-slate-50 rounded-xl p-4">
+              <summary class="cursor-pointer font-semibold text-slate-700 flex items-center justify-between">
+                <span>See how this match was calculated</span>
+                <span class="text-sm text-slate-500">Breakdown</span>
+              </summary>
+              <div class="mt-4 space-y-3">
+                {% for metric in r.breakdown %}
+                <div class="flex items-center justify-between border border-slate-200 rounded-lg p-3 bg-white">
+                  <div>
+                    <p class="font-medium text-slate-800">{{ metric.label }}</p>
+                    <p class="text-xs text-slate-500">You: {{ metric.student_value }}{{ metric.unit }} • Needs: {{ metric.company_value }}{{ metric.unit }}</p>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-lg font-semibold text-slate-800">{{ metric.score }}%</div>
+                    <p class="text-xs {% if metric.status == 'meets' %}text-green-600{% else %}text-orange-600{% endif %}">
+                      {% if metric.status == 'meets' %}On Track{% else %}Gap{% endif %}
+                    </p>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+            </details>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Action Section -->
+      <div class="mt-12 bg-gradient-to-r from-emerald-600 to-blue-600 rounded-2xl p-8 text-center text-white">
+        <h3 class="text-2xl font-bold mb-4">Ready to Take the Next Step?</h3>
+        <p class="text-emerald-100 mb-6">Apply to multiple companies to increase your chances of success!</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="/applications" 
+             class="px-6 py-3 bg-white text-emerald-600 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+            📋 View My Applications
+          </a>
+          <a href="/recommend" 
+             class="px-6 py-3 border border-white text-white rounded-lg font-semibold hover:bg-white/10 transition-colors">
+            🔄 Try Different Profile
+          </a>
+        </div>
+      </div>
+
+      <!-- Tips Section -->
+      <div class="mt-8 bg-blue-50 rounded-xl p-6">
+        <h4 class="font-semibold text-blue-800 mb-3">💡 Application Tips:</h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-blue-700">
+          <ul class="space-y-2">
+            <li>• Apply to companies where you meet requirements first</li>
+            <li>• Don't ignore companies where you're slightly below - they might still consider you</li>
+            <li>• Customize your resume for each application</li>
+          </ul>
+          <ul class="space-y-2">
+            <li>• Use multiple platforms (Naukri, LinkedIn, Company sites)</li>
+            <li>• Follow up on your applications after a week</li>
+            <li>• Keep improving your skills while applying</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Add animation to match score circles
+    document.addEventListener('DOMContentLoaded', function() {
+      const circles = document.querySelectorAll('path[stroke-dasharray]');
+      circles.forEach((circle, index) => {
+        setTimeout(() => {
+          circle.style.transition = 'stroke-dasharray 1s ease-in-out';
+        }, index * 200);
+      });
+    });
+
+    // Add click tracking for applications
+    document.querySelectorAll('a[href*="/apply/"]').forEach(link => {
+      link.addEventListener('click', function() {
+        const companyName = this.closest('.bg-white').querySelector('h3').textContent;
+        console.log('User applying to:', companyName);
+        
+        // Add loading state
+        this.innerHTML = '⏳ Redirecting...';
+        this.style.pointerEvents = 'none';
+      });
+    });
+  </script>
+</body>
+</html>

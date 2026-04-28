@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>InternMatch - Smart Internship Recommendations</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          animation: {
+            'fade-in': 'fadeIn 0.5s ease-in-out',
+            'slide-up': 'slideUp 0.6s ease-out',
+            'bounce-slow': 'bounce 2s infinite',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes slideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-blue-50">
+  <!-- Header -->
+  <nav class="bg-white/80 backdrop-blur-sm border-b border-emerald-100 sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-4 py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <div class="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center">
+            <span class="text-white font-bold text-sm">IM</span>
+          </div>
+          <span class="text-xl font-bold text-emerald-600">InternMatch</span>
+        </div>
+        <div class="hidden md:flex space-x-6 items-center">
+          <a href="#features" class="text-slate-600 hover:text-emerald-600 transition-colors">Features</a>
+          <a href="#companies" class="text-slate-600 hover:text-emerald-600 transition-colors">Companies</a>
+          <a href="#how-it-works" class="text-slate-600 hover:text-emerald-600 transition-colors">How It Works</a>
+          <a href="/register/company" class="text-slate-600 hover:text-emerald-600 transition-colors">Register Company</a>
+          {% if logged_in %}
+          <a href="/recommend" class="text-slate-600 hover:text-emerald-600 transition-colors">My Profile</a>
+          <a href="/applications" class="text-slate-600 hover:text-emerald-600 transition-colors">Applications</a>
+          <a href="/logout" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">Logout</a>
+          {% else %}
+          <a href="/login" class="text-slate-600 hover:text-emerald-600 transition-colors">Log In</a>
+          <a href="/signup" class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors">Sign Up</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="py-20 px-4">
+    <div class="max-w-6xl mx-auto text-center">
+      <div class="animate-fade-in">
+        <h1 class="text-5xl md:text-6xl font-bold text-slate-800 mb-6">
+          Find Your Perfect
+          <span class="text-emerald-600 block">Internship Match</span>
+        </h1>
+        <p class="text-xl text-slate-600 mb-8 max-w-3xl mx-auto">
+          Get personalized internship recommendations based on your CGPA, programming skills, and achievements. 
+          Apply directly to real job listings on Naukri, LinkedIn, and company career pages.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          {% if logged_in %}
+          <a href="/recommend" class="px-8 py-4 bg-emerald-600 text-white rounded-xl font-semibold text-lg hover:bg-emerald-700 transition-all transform hover:scale-105 shadow-lg">
+            🚀 Update Profile & Get Matches
+          </a>
+          <a href="/applications" class="px-8 py-4 bg-white text-emerald-600 border border-emerald-200 rounded-xl font-semibold text-lg hover:bg-emerald-50 transition-all transform hover:scale-105 shadow-lg">
+            📋 My Applications
+          </a>
+          <div class="flex items-center text-slate-500 text-sm">
+            <span class="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></span>
+            Welcome back, {{ student.name }}!
+          </div>
+          {% else %}
+          <a href="/signup" class="px-8 py-4 bg-emerald-600 text-white rounded-xl font-semibold text-lg hover:bg-emerald-700 transition-all transform hover:scale-105 shadow-lg">
+            🚀 Sign Up Now
+          </a>
+          <a href="/login" class="px-8 py-4 bg-white text-emerald-600 border border-emerald-200 rounded-xl font-semibold text-lg hover:bg-emerald-50 transition-all transform hover:scale-105 shadow-lg">
+            🔑 Log In
+          </a>
+          <div class="flex items-center text-slate-500 text-sm">
+            <span class="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></span>
+            Join thousands of students today
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="py-16 bg-white/50">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+        <div class="animate-slide-up">
+          <div class="text-4xl font-bold text-emerald-600 mb-2">20+</div>
+          <div class="text-slate-600">Top Companies</div>
+          <div class="text-sm text-slate-500 mt-1">Google, Microsoft, Amazon & more</div>
+        </div>
+        <div class="animate-slide-up" style="animation-delay: 0.1s">
+          <div class="text-4xl font-bold text-blue-600 mb-2">3</div>
+          <div class="text-slate-600">Apply Channels</div>
+          <div class="text-sm text-slate-500 mt-1">Naukri, LinkedIn, Company Careers</div>
+        </div>
+        <div class="animate-slide-up" style="animation-delay: 0.2s">
+          <div class="text-4xl font-bold text-purple-600 mb-2">AI</div>
+          <div class="text-slate-600">Smart Matching</div>
+          <div class="text-sm text-slate-500 mt-1">Machine Learning Recommendations</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="py-20 px-4">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl font-bold text-slate-800 mb-4">Why Choose InternMatch?</h2>
+        <p class="text-xl text-slate-600">Everything you need to land your dream internship</p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow">
+          <div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center mb-4">
+            <span class="text-2xl">🎯</span>
+          </div>
+          <h3 class="text-xl font-semibold text-slate-800 mb-2">Smart Matching</h3>
+          <p class="text-slate-600">AI-powered recommendations based on your CGPA, programming skills, and profile.</p>
+        </div>
+        
+        <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow">
+          <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
+            <span class="text-2xl">🌐</span>
+          </div>
+          <h3 class="text-xl font-semibold text-slate-800 mb-2">Real Job Listings</h3>
+          <p class="text-slate-600">Direct links to actual internship postings on Naukri, LinkedIn, and company sites.</p>
+        </div>
+        
+        <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow">
+          <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
+            <span class="text-2xl">📊</span>
+          </div>
+          <h3 class="text-xl font-semibold text-slate-800 mb-2">Match Scores</h3>
+          <p class="text-slate-600">See how well you match with each company and focus on the best opportunities.</p>
+        </div>
+        
+        <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow">
+          <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center mb-4">
+            <span class="text-2xl">📋</span>
+          </div>
+          <h3 class="text-xl font-semibold text-slate-800 mb-2">Application Tracking</h3>
+          <p class="text-slate-600">Keep track of all your applications across different platforms in one place.</p>
+        </div>
+        
+        <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow">
+          <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4">
+            <span class="text-2xl">⚡</span>
+          </div>
+          <h3 class="text-xl font-semibold text-slate-800 mb-2">Instant Results</h3>
+          <p class="text-slate-600">Get personalized recommendations in seconds, no waiting required.</p>
+        </div>
+        
+        <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow">
+          <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center mb-4">
+            <span class="text-2xl">🎓</span>
+          </div>
+          <h3 class="text-xl font-semibold text-slate-800 mb-2">Student Friendly</h3>
+          <p class="text-slate-600">Designed specifically for students with clear requirements and guidance.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Companies Section -->
+  <section id="companies" class="py-20 bg-slate-50">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl font-bold text-slate-800 mb-4">Top Companies Hiring</h2>
+        <p class="text-xl text-slate-600">Connect with leading companies across industries</p>
+      </div>
+      
+      <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
+        <div class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow text-center">
+          <div class="text-2xl mb-2">🔍</div>
+          <div class="font-semibold text-slate-700">Google</div>
+          <div class="text-xs text-slate-500">Technology</div>
+        </div>
+        <div class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow text-center">
+          <div class="text-2xl mb-2">🪟</div>
+          <div class="font-semibold text-slate-700">Microsoft</div>
+          <div class="text-xs text-slate-500">Technology</div>
+        </div>
+        <div class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow text-center">
+          <div class="text-2xl mb-2">📦</div>
+          <div class="font-semibold text-slate-700">Amazon</div>
+          <div class="text-xs text-slate-500">E-commerce</div>
+        </div>
+        <div class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow text-center">
+          <div class="text-2xl mb-2">🍎</div>
+          <div class="font-semibold text-slate-700">Apple</div>
+          <div class="text-xs text-slate-500">Technology</div>
+        </div>
+        <div class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow text-center">
+          <div class="text-2xl mb-2">📘</div>
+          <div class="font-semibold text-slate-700">Meta</div>
+          <div class="text-xs text-slate-500">Social Media</div>
+        </div>
+        <div class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow text-center">
+          <div class="text-2xl mb-2">🍕</div>
+          <div class="font-semibold text-slate-700">Zomato</div>
+          <div class="text-xs text-slate-500">Food Tech</div>
+        </div>
+        <div class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow text-center">
+          <div class="text-2xl mb-2">💳</div>
+          <div class="font-semibold text-slate-700">Paytm</div>
+          <div class="text-xs text-slate-500">Fintech</div>
+        </div>
+        <div class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow text-center">
+          <div class="text-2xl mb-2">🚗</div>
+          <div class="font-semibold text-slate-700">Uber</div>
+          <div class="text-xs text-slate-500">Transportation</div>
+        </div>
+        <div class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow text-center">
+          <div class="text-2xl mb-2">🎵</div>
+          <div class="font-semibold text-slate-700">Spotify</div>
+          <div class="text-xs text-slate-500">Music</div>
+        </div>
+        <div class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow text-center">
+          <div class="text-2xl mb-2">📚</div>
+          <div class="font-semibold text-slate-700">Byju's</div>
+          <div class="text-xs text-slate-500">EdTech</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section id="how-it-works" class="py-20 px-4">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl font-bold text-slate-800 mb-4">How It Works</h2>
+        <p class="text-xl text-slate-600">Get matched with your ideal internship in 4 simple steps</p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="text-center">
+          <div class="w-16 h-16 bg-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="text-white font-bold text-xl">1</span>
+          </div>
+          <h3 class="text-xl font-semibold text-slate-800 mb-2">Enter Profile</h3>
+          <p class="text-slate-600">Share your CGPA, programming skills, and achievements</p>
+        </div>
+        
+        <div class="text-center">
+          <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="text-white font-bold text-xl">2</span>
+          </div>
+          <h3 class="text-xl font-semibold text-slate-800 mb-2">Get Matches</h3>
+          <p class="text-slate-600">AI analyzes your profile and finds the best company matches</p>
+        </div>
+        
+        <div class="text-center">
+          <div class="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="text-white font-bold text-xl">3</span>
+          </div>
+          <h3 class="text-xl font-semibold text-slate-800 mb-2">Choose Platform</h3>
+          <p class="text-slate-600">Apply via Naukri, LinkedIn, or company career pages</p>
+        </div>
+        
+        <div class="text-center">
+          <div class="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="text-white font-bold text-xl">4</span>
+          </div>
+          <h3 class="text-xl font-semibold text-slate-800 mb-2">Land Internship</h3>
+          <p class="text-slate-600">Apply to real job listings and track your applications</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-20 bg-gradient-to-r from-emerald-600 to-blue-600">
+    <div class="max-w-4xl mx-auto text-center px-4">
+      <h2 class="text-4xl font-bold text-white mb-4">Ready to Find Your Dream Internship?</h2>
+      <p class="text-xl text-emerald-100 mb-8">Join thousands of students who found their perfect internship match</p>
+      {% if logged_in %}
+      <a href="/recommend" class="inline-block px-8 py-4 bg-white text-emerald-600 rounded-xl font-semibold text-lg hover:bg-gray-100 transition-all transform hover:scale-105 shadow-lg">
+        🚀 Find Your Matches
+      </a>
+      {% else %}
+      <a href="/signup" class="inline-block px-8 py-4 bg-white text-emerald-600 rounded-xl font-semibold text-lg hover:bg-gray-100 transition-all transform hover:scale-105 shadow-lg">
+        🚀 Start Your Journey Now
+      </a>
+      {% endif %}
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-slate-800 text-white py-12">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div>
+          <div class="flex items-center space-x-2 mb-4">
+            <div class="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center">
+              <span class="text-white font-bold text-sm">IM</span>
+            </div>
+            <span class="text-xl font-bold">InternMatch</span>
+          </div>
+          <p class="text-slate-400">Smart internship recommendations powered by AI. Find your perfect match today.</p>
+        </div>
+        <div>
+          <h4 class="font-semibold mb-4">Quick Links</h4>
+          <ul class="space-y-2 text-slate-400">
+            <li><a href="/register/student" class="hover:text-white transition-colors">Student Registration</a></li>
+            <li><a href="/register/company" class="hover:text-white transition-colors">Company Signup</a></li>
+            <li><a href="#features" class="hover:text-white transition-colors">Features</a></li>
+            <li><a href="#companies" class="hover:text-white transition-colors">Companies</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-semibold mb-4">Apply Channels</h4>
+          <ul class="space-y-2 text-slate-400">
+            <li>🟠 Naukri.com</li>
+            <li>🔵 LinkedIn</li>
+            <li>🟢 Company Careers</li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-slate-700 mt-8 pt-8 text-center text-slate-400">
+        <p>&copy; 2024 InternMatch. Built with ❤️ for students.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+
+    // Add scroll animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+
+    // Observe elements for animation
+    document.querySelectorAll('.animate-slide-up').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(30px)';
+      el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>

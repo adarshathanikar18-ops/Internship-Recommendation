@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Register Company - InternMatch</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-emerald-50">
+  <nav class="bg-white/80 backdrop-blur-sm border-b border-emerald-100">
+    <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="flex items-center space-x-2">
+        <div class="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center">
+          <span class="text-white font-bold text-sm">IM</span>
+        </div>
+        <span class="text-xl font-bold text-emerald-600">InternMatch</span>
+      </div>
+      <div class="flex items-center gap-4 text-sm text-slate-500">
+        <a href="/" class="hover:text-emerald-600">Home</a>
+        <a href="/register/student" class="hover:text-emerald-600">Student Registration</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="py-12 px-4">
+    <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl p-8">
+      <div class="mb-8 text-center">
+        <h1 class="text-3xl font-bold text-slate-800 mb-2">Register Your Company</h1>
+        <p class="text-slate-600">Share your internship requirements so the right students can find you.</p>
+      </div>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="space-y-3 mb-6">
+            {% for category, message in messages %}
+              <div class="px-4 py-3 rounded-lg {% if category == 'success' %}bg-emerald-50 text-emerald-800 border border-emerald-200{% else %}bg-red-50 text-red-800 border border-red-200{% endif %}">
+                {{ message }}
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      <form method="POST" action="/register/company" class="space-y-8">
+        <!-- Basic Info -->
+        <section class="space-y-4">
+          <h2 class="text-xl font-semibold text-slate-800">Company Details</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1">Company Name *</label>
+              <input name="name" type="text" required placeholder="Acme Corp"
+                class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1">Location</label>
+              <input name="location" type="text" placeholder="Bengaluru, India"
+                class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1">Website</label>
+              <input name="website" type="url" placeholder="https://company.com"
+                class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1">Job Type</label>
+              <select name="job_type" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500">
+                <option value="Internship">Internship</option>
+                <option value="Full-time Internship">Full-time Internship</option>
+                <option value="Co-op">Co-op</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">About the Role</label>
+            <textarea name="description" rows="3" placeholder="Share a short summary about your internship program"
+              class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500"></textarea>
+          </div>
+        </section>
+
+        <!-- Requirements -->
+        <section class="space-y-4">
+          <h2 class="text-xl font-semibold text-slate-800">Academic Requirements</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1">Minimum CGPA</label>
+              <input name="min_cgpa" type="number" step="0.01" min="0" max="10" placeholder="7.0"
+                class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div class="md:col-span-2">
+              <label class="block text-sm font-medium text-slate-700 mb-1">Programming Score</label>
+              <input name="min_programming_score" type="number" min="0" max="100" placeholder="70"
+                class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+
+          {% if subject_fields %}
+          <div>
+            <h3 class="text-sm font-semibold text-slate-600 uppercase tracking-wide mb-3">Subject Benchmarks</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {% for field, label in subject_fields %}
+              <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">{{ label }}</label>
+                {% set requirement_name = 'min_' + field.replace('_marks', '_score') %}
+                <input name="{{ requirement_name }}" type="number" min="0" max="100" placeholder="75"
+                  class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500" />
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+        </section>
+
+        <!-- Skills & Links -->
+        <section class="space-y-4">
+          <h2 class="text-xl font-semibold text-slate-800">Skills & Apply Channels</h2>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Required Skills</label>
+            <input name="required_skills" type="text" placeholder="Python, React, SQL..."
+              class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500" />
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1">Naukri URL</label>
+              <input name="naukri_url" type="url" placeholder="https://www.naukri.com/job"
+                class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1">LinkedIn URL</label>
+              <input name="linkedin_url" type="url" placeholder="https://www.linkedin.com/jobs/..."
+                class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1">Careers Page</label>
+              <input name="company_careers_url" type="url" placeholder="https://company.com/careers"
+                class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+        </section>
+
+        <div class="flex flex-col sm:flex-row gap-4 pt-4">
+          <button type="submit"
+            class="flex-1 px-6 py-3 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-700 transition-colors transform hover:scale-105 shadow-lg">
+            📤 Publish Company Profile
+          </button>
+          <a href="/" class="px-6 py-3 border border-slate-300 text-slate-700 rounded-lg font-semibold hover:bg-slate-50 text-center">
+            Cancel
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
+
