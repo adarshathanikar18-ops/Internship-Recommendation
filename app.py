@@ -98,6 +98,12 @@ MATCH_METRICS = [
 ]
 
 
+def initialize_database():
+    """Ensure required tables exist in every runtime environment."""
+    with app.app_context():
+        db.create_all()
+
+
 def safe_float(value, default=0.0):
     try:
         return float(value)
@@ -506,7 +512,8 @@ def company_details(company_id):
         subject_fields=SUBJECT_FIELDS
     )
 
+# Initialize DB at import time so Gunicorn/Render workers are ready.
+initialize_database()
+
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()  # 🔥 Create tables before app runs
     app.run(debug=True)
