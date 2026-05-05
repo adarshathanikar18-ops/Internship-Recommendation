@@ -5,12 +5,14 @@ services:
     region: oregon        # free tier region
     plan: free
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app --workers 2 --bind 0.0.0.0:$PORT
+    startCommand: gunicorn --bind 0.0.0.0:$PORT wsgi:app
     envVars:
       - key: FLASK_ENV
         value: production
       - key: SECRET_KEY
         generateValue: true   # Render auto-generates a secure secret key
+      - key: DATABASE_URI
+        value: sqlite:////var/data/company_reco.db
     disk:
       name: sqlite-data
       mountPath: /var/data   # store SQLite DB here so it persists
